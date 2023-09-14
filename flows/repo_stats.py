@@ -28,6 +28,7 @@ def get_open_issues(repo_name: str, open_issues_count: int, per_page: int = 100)
 
 @flow(log_prints=True, retries=3, retry_delay_seconds=5)
 def get_repo_info(repo_name: str = "PrefectHQ/prefect"):
+    """Print some basic info about a GitHub repository"""
     repo = get_url(f"https://api.github.com/repos/{repo_name}")
     issues = get_open_issues(repo_name, repo["open_issues_count"])
     issues_per_user = len(issues) / len(set([i["user"]["id"] for i in issues]))
@@ -41,7 +42,6 @@ def get_repo_info(repo_name: str = "PrefectHQ/prefect"):
 
 
 if __name__ == "__main__":
-    try:
-        get_repo_info(sys.argv[1])
-    except IndexError:
-        get_repo_info()
+    get_repo_info.serve(name="get-repo-info-deployment",
+                        tags=["tutorial"]
+                        )
